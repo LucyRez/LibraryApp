@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import se.hse.booksapptemplate.data.BookItem
+import se.hse.booksapptemplate.data.BookRequest
 import se.hse.booksapptemplate.repository.BookRepository
 import se.hse.booksapptemplate.util.Resource
 import javax.inject.Inject
@@ -26,11 +27,17 @@ class LibraryViewModel @Inject constructor(val bookRepository: BookRepository): 
                 is Resource.Failure -> Log.w("Test", "Failure during request")
                 is Resource.Success -> {
                     listBooks.value = books.data ?: listOf()
-                    listBooks.value += books.data ?: listOf()
-                    listBooks.value += books.data ?: listOf()
                 }
             }
 
+        }
+    }
+
+    fun addNewBook(bookTitle: String) {
+        viewModelScope.launch {
+            bookRepository.saveNewBook(BookRequest(title = bookTitle,
+            author = "New Author", description = "Lorem ipsum dolor seize the day carpe diem memento mori scholae non vitae discimus"))
+            getAllBooks()
         }
     }
 
